@@ -53,11 +53,11 @@ intern n = do
             put $ ParserState identifiers'
             return fresh
 
-parse :: ((AsParserError e), MonadQuote m, MonadError e m) =>
+parse :: ((AsParserError e), MonadError e m) =>
     Parser a -> String -> T.Text -> m a
 parse p file str =
     throwingEither
-        _ParserError -- TODO should this be of type Prism' r (ParseErrorBundle Text ParserError) instead?
+        _ParserError
         (parseToParserErr p file str)
 
 extractParserErr :: ParseErrorBundle T.Text ParserError -> ParserError
@@ -73,7 +73,7 @@ parseToParserErr p file str =
 
 
 -- | Generic parser function.
-parseGen :: ((AsParserError e), MonadError e m, MonadQuote m) => Parser a -> ByteString -> m a
+parseGen :: ((AsParserError e), MonadError e m) => Parser a -> ByteString -> m a
 parseGen stuff bs = parse stuff "test" $ (T.pack . unpackChars) bs
 
 -- | Space consumer.

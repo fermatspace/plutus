@@ -40,6 +40,8 @@ import PlutusCore.Pretty
 import Control.Lens hiding (use)
 import Control.Monad.Error.Lens
 import Control.Monad.Except
+import Data.List.NonEmpty qualified as NE
+import Data.Set qualified as Set
 import Data.Text qualified as T
 import ErrorCode
 import Prettyprinter (hardline, indent, squotes, (<+>))
@@ -113,6 +115,22 @@ deriving stock instance (Show fun, Show ann, Closed uni, Everywhere uni Show, GS
 
 instance AsParserError (Error uni fun ann) where
     _ParserError = _ParseErrorE
+
+instance AsParserError (ParseErrorBundle T.Text ParserError) where
+-- Construct a simple prism of Prism' (Error uni fun ann) ParserError with
+-- prism' :: (a -> s) -> (s -> Maybe a) -> Prism' s a
+    _ParserError = prism' putParserErr takeParserErr
+
+-- This may not be the right direction because we are losing a lot of info
+putParserErr :: ParserError -> ParseErrorBundle T.Text ParserError
+putParserErr err =
+    ParseErrorBundle
+        (FancyError 0 (Set.singleton (ErrorCustom err)) :| [])
+        (PosState "" 0 (initialPos "test") (mkPos 0) "")
+
+takeParserErr :: ParseErrorBundle T.Text ParserError -> Maybe ParserError
+takeParserErr (ParseErrorBundle (NE.head -> (FancyError _ (Set.findMin -> (ErrorCustom e)))) _) = Just e
+takeParserErr _                                                                                 = Nothing
 
 instance AsUniqueError (Error uni fun ann) ann where
     _UniqueError = _UniqueCoherencyErrorE
