@@ -136,7 +136,7 @@ testLexConstant =
     mapM_
         (\t ->
             (fmap
-                void . (parseTerm :: ByteString -> Either (ParseErrorBundle T.Text ParserError) (Term TyName Name DefaultUni DefaultFun SourcePos)). reprint $ t) @?= Right t) smallConsts
+                void . parseTerm. reprint $ t) @?= Right t) smallConsts
         where
           smallConsts :: [Term TyName Name DefaultUni DefaultFun ()]
           smallConsts =
