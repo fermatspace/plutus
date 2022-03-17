@@ -28,7 +28,6 @@ import PlutusCore.Generators.NEAT.Spec qualified as NEAT
 import PlutusCore.MkPlc
 import PlutusCore.Pretty
 
-import Data.ByteString.Lazy (ByteString)
 import Data.ByteString.Lazy qualified as BSL
 import Data.Either (isLeft)
 import Data.Text qualified as T
@@ -42,7 +41,6 @@ import Test.Tasty
 import Test.Tasty.Golden
 import Test.Tasty.HUnit
 import Test.Tasty.Hedgehog
-import Text.Megaparsec
 
 main :: IO ()
 main = do
