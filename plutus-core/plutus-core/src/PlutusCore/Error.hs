@@ -117,11 +117,10 @@ instance AsParserError (Error uni fun ann) where
     _ParserError = _ParseErrorE
 
 instance AsParserError (ParseErrorBundle T.Text ParserError) where
--- Construct a simple prism of Prism' (Error uni fun ann) ParserError with
+-- Construct a simple prism of Prism' ParseErrorBundle ParserError with
 -- prism' :: (a -> s) -> (s -> Maybe a) -> Prism' s a
     _ParserError = prism' putParserErr takeParserErr
 
--- This may not be the right direction because we are losing a lot of info
 putParserErr :: ParserError -> ParseErrorBundle T.Text ParserError
 putParserErr err =
     ParseErrorBundle
